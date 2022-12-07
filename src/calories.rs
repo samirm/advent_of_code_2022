@@ -1,23 +1,38 @@
-use std::fs::File;
-use std::io::{self, BufRead};
-use std::path::Path;
 
-fn main() {
-    // File hosts must exist in current path before this produces output
-    if let Ok(lines) = read_lines("data/calories.txt") {
-        // Consumes the iterator, returns an (Optional) String
-        for line in lines {
-            if let Ok(ip) = line {
-                println!("{}", ip);
-            }
-        }
-    }
+#[derive(Debug)]
+struct Elf {
+    id: i32,
+    total_calories: i32
 }
 
-// The output is wrapped in a Result to allow matching on errors
-// Returns an Iterator to the Reader of the lines of the file.
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-    where P: AsRef<Path>, {
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
+fn main() {
+    let mut elves: Vec<Elf> = vec![];
+    let mut this_id = 0;
+
+    let string: String = std::fs::read_to_string("data/calories.txt").expect("no such file").parse().expect("could not parse");
+    // println!("{}", string);
+
+    let lines: Vec<&str> = string.lines().collect();
+    // println!("{:?}", lines);
+    let mut total = 0;
+    for line in lines {
+        if !line.is_empty() {
+            total += line.parse::<i32>().unwrap();
+        } else {
+            this_id += 1;
+            let elf = Elf { id: this_id, total_calories: total };
+            // println!("{:?}", elf);
+            elves.push(elf);
+            total = 0;
+        }
+    }
+
+    elves.sort_unstable_by_key(|e| e.total_calories);
+    println!("part1: {:?}", elves.last());
+
+    let mut last3 = 0;
+    for elf in elves.iter().rev().take(3) {
+        last3 += elf.total_calories;
+    }
+    println!("part2: {}", last3)
 }
