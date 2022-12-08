@@ -8,4 +8,4 @@ edition = "2021"
 
 [[bin]]
 name = "advent_of_code_2022"
-path = "src/calories.rs"
+path = "src/rock_paper_scissors.rs"
