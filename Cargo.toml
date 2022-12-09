@@ -8,4 +8,4 @@ edition = "2021"
 
 [[bin]]
 name = "advent_of_code_2022"
-path = "src/rucksack.rs"
+path = "src/camp_cleanup.rs"
